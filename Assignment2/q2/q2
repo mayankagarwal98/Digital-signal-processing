@@ -1,0 +1,63 @@
+
+Given,
+        Input-size=WxHxchannels
+        Filter-size=FxFxchannels
+        Step-size=S
+        Zero-Padding=Z
+        Number of filters =N
+    a)
+    After Zero padding size of the input
+                =(W+2*Z)x(H+2*Z)xchannels
+            Let k1,k2 be two positive numbers
+                k1*S+F=W+2*Z
+                k1=floor((W+2*Z-F)/S)
+            Similarly 
+                k2*S+F=H+2*Z
+                k2=floor((H+2*Z-F)/S)
+Therefore,after applying one filter the dimensions become
+            (k1+1)x(k2+1)xchannels
+        Now for the same second filter
+            W’’=floor(W’/S)+A
+            W’’=((W+2*Z)/S+A)/S + A
+            W’’=(W+2*Z)/S^2+A/S+A
+Similarly then after the nth filter applied 
+    W^n=(W+2*Z)/S^n+A/S^(n-1)+A/S^(n-2)+.....+A
+This is a GP
+    W^n = (W+2*Z)/S^n+(A/S^(n-1))*((S^n-1)/(S-1))
+where A=1-(F/S)
+Similarly for the Height also 
+
+H^n=floor((W+2*Z)/S^n +(A/S^(n-1))*((S^n-1)/(S-1))
+Where A=1-(F/S)
+
+The number of channels remain same through out the 
+Hence the final output dimensions are 
+                W^n x H^n x channels
+
+b)
+    Multiplications:
+    Inp-size (W+2*Z)x(H+2*Z)x channels {After padding}
+            “
+            “
+            “    ⇒{W’H’(F*F)*channels} multiplications
+            “
+After 1st Fill W’xH’xchannels
+            “
+            “
+            “    ⇒{W”H”(F*F)*channels} multiplications
+            “
+After 2nd Fil W”xH”xchannels
+        “
+        “
+        “    ⇒{W^n*H^n*(F*F)*channels} multiplications
+        “
+        “
+        “
+After nth Fill     W^nxH^nxchannels
+
+⇒
+Total Number of multiplications are 
+=(W’H’+W”*H”+.....+W^n*H^n)(F*F)*channels
+Similarly
+Total Number of Additions are 
+    =(W’H’+W”*H”+.....+W^n*H^n)(F*F-1)*channels
